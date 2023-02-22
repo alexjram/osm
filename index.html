@@ -1,0 +1,65 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>My first osm</title>
+    <link rel="stylesheet" type="text/css" href="http://localhost:1080/leaflet.css" />
+    <script type="text/javascript" src="http://localhost:1080/leaflet.js"></script>
+    <style>
+        #map {
+            width: 100%;
+            height: 100%
+        }
+
+        form {
+            width: 200px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        #list {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <form>
+        <input type="text" name="q" placeholder="type here">
+        <button>Search</button>
+    </form>
+    <ol id="list">
+
+    </ol>
+    <script>
+        var map = L.map('map').setView([0, 0], 3);
+        L.tileLayer('http://localhost:1080/tile/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+        let form = document.querySelector('form')
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            let input = form.querySelector('input');
+
+            fetch(`http://localhost:1081/search?q=${encodeURIComponent(input.value)}`)
+                .then(res => res.json()).then(json => {
+                    const list = document.getElementById('list');
+                    list.innerHTML = '';
+
+                    json.forEach(place => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<b>Type:</b> ${place.type}<br><b>Name:</b> ${place.display_name}`;
+                        list.appendChild(li);
+                    })
+                });
+        })
+    </script>
+</body>
+
+</html>

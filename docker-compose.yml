@@ -1,0 +1,28 @@
+version: '3.5'
+
+services:
+  osm:
+    container_name: osm
+    image: overv/openstreetmap-tile-server
+    volumes:
+      - ./info/venezuela-latest.osm.pbf:/data/region.osm.pbf # Change name of the file to the one downloaded
+      - osm-data:/var/lib/postgresql/14/main
+    ports:
+      - "1080:80"
+    command: "import" #Execute only the first time
+    #command: "run" #Execute only after executing import
+  # nominatim:
+  #   container_name: nominatim
+  #   image: mediagis/nominatim:4.2
+  #   environment:
+  #     - PBF_PATH=/nominatim/data/venezuela-latest.osm.pbf # Change filename to the one downloaded
+  #   ports:
+  #     - 1081:8080
+  #   volumes:
+  #     - nominatim-data:/var/lib/postgresql/14/main
+  #     - ./info:/nominatim/data
+
+
+volumes:
+  osm-data:
+  nominatim-data:
